@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">GroupProject2</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_search">Search</string>
+    <string name="lorem_ipsum">Hello</string>
+    <string name="lorem_ipsum2">Hi</string>
+</resources>
