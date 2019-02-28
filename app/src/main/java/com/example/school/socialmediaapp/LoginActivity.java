@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                 //authenticate user
                 if (newUser.isEnabled() == true){
                     createAccount();
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, ScreenSlidePagerActivity.class);
                     startActivity(intent);
 
                 }else{
@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                                     // the auth state listener will be notified and logic to handle the
                                     // signed in user can be handled in the listener.
                                     if (task.isSuccessful()) {
-                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        Intent intent = new Intent(LoginActivity.this, ScreenSlidePagerActivity.class);
                                         startActivity(intent);
                                     }
                                 }
@@ -137,7 +137,7 @@ public class LoginActivity extends AppCompatActivity {
 
             } else {
                 // If sign in fails, display a message to the user.
-                Toast.makeText(LoginActivity.this, "Authentication failed.",
+                Toast.makeText(LoginActivity.this, task.getException().getMessage(),
                         Toast.LENGTH_SHORT).show();
 
             }
