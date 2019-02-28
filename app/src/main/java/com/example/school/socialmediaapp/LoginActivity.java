@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 /**
@@ -42,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText inputEmail, inputPassword;
     private FirebaseAuth auth;
     private Button btnLogin;
+    private FirebaseDatabase database;
     String email;
     String password;
     CheckBox newUser;
@@ -53,26 +55,24 @@ public class LoginActivity extends AppCompatActivity {
 
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
 
 
-       /* if (auth.getCurrentUser() != null) {
+       if (auth.getCurrentUser() != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
-        }*/
+        }
 
-        // set the view now
         setContentView(R.layout.activity_login);
 
 
 
-        inputEmail = (EditText) findViewById(R.id.email);
+        inputEmail =  findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
         btnLogin = (Button) findViewById(R.id.btn_login);
         newUser = (CheckBox) findViewById(R.id.checkBox3);
 
 
-        //Get Firebase auth instance
-        auth = FirebaseAuth.getInstance();
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
