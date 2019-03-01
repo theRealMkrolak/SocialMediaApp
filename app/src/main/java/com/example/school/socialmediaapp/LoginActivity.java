@@ -57,13 +57,14 @@ public class LoginActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
 
+        setContentView(R.layout.activity_login);
 
        if (auth.getCurrentUser() != null) {
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            startActivity(new Intent(LoginActivity.this, ScreenSlidePagerActivity.class));
             finish();
         }
 
-        setContentView(R.layout.activity_login);
+
 
 
 

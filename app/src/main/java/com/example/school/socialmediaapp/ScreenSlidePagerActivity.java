@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+
 public class ScreenSlidePagerActivity extends FragmentActivity {
     /**
      * The number of pages (wizard steps) to show in this demo.
@@ -29,6 +31,8 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
 
     private FirebaseDatabase database;
     private FirebaseAuth mAuth;
+
+    private int[] LIST_OF_FRAGMENTS = new int[]{R.layout.fragment_screen_slide_page,R.layout.fragment_screen_slide_page2,R.layout.fragment_screen_slide_page3};
 
     /**
      * The pager adapter, which provides the pages to the view pager widget.
@@ -52,8 +56,10 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
             return false;
         }
     };
+
     private PagerAdapter mPagerAdapter;
     public int i;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,13 +68,10 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
         mAuth = FirebaseAuth.getInstance();
 
 
-
-
-
         setContentView(R.layout.activity_screen_slide);
 
         mPager = findViewById(R.id.pager);
-        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(),LIST_OF_FRAGMENTS);
         mPager.setAdapter(mPagerAdapter);
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -115,29 +118,25 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
      */
 
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
+        private ArrayList<ScreenSlidePageFragment> fragmentList;
+
+        public ScreenSlidePagerAdapter(FragmentManager fm, int[] a) {
+
             super(fm);
+            fragmentList = new ArrayList<>();
+            for(int i : a){
+                fragmentList.add(new ScreenSlidePageFragment(i));
+            }
         }
 
         @Override
         public Fragment getItem(int position) {
-            if(position == 0){
-                return new ScreenSlidePageFragment(R.layout.fragment_screen_slide_page);
-            }
-            else if(position==1) {
-                return new ScreenSlidePageFragment(R.layout.fragment_screen_slide_page2);
-            }
-            else if(position==2) {
-                return new ScreenSlidePageFragment(R.layout.fragment_screen_slide_page3);
-            }
-            else{
-                return null;
-            }
+            return fragmentList.get(position);
         }
 
         @Override
         public int getCount() {
-            return NUM_PAGES;
+            return fragmentList.size();
         }
     }
 }
