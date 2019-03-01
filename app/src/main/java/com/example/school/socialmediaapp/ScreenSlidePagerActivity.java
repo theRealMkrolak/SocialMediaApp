@@ -12,6 +12,9 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class ScreenSlidePagerActivity extends FragmentActivity {
     /**
      * The number of pages (wizard steps) to show in this demo.
@@ -23,6 +26,9 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
      * and next wizard steps.
      */
     public ViewPager mPager;
+
+    private FirebaseDatabase database;
+    private FirebaseAuth mAuth;
 
     /**
      * The pager adapter, which provides the pages to the view pager widget.
@@ -51,10 +57,17 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        database = FirebaseDatabase.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
+
+
+
+
         setContentView(R.layout.activity_screen_slide);
 
-        // Instantiate a ViewPager and a PagerAdapter.
-        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager = findViewById(R.id.pager);
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         navigation = (BottomNavigationView) findViewById(R.id.navigation);

@@ -7,9 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 @SuppressLint("ValidFragment")
-public class ScreenSlidePageFragment extends Fragment {
+public class ScreenSlidePageFragment extends Fragment{
     ViewGroup rootView;
     public int cntrl = 0;
+    private  OnViewCreateListener onStartListener;
 
     @SuppressLint("ValidFragment")
     public ScreenSlidePageFragment(int x){
@@ -21,5 +22,9 @@ public class ScreenSlidePageFragment extends Fragment {
         rootView = (ViewGroup) inflater.inflate(cntrl, container, false);
         return rootView;
 
+    }
+
+    public void setOnStartListener(OnViewCreateListener onStart){
+        onStartListener = onStart;
     }
 }
