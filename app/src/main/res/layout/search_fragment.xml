@@ -8,17 +8,11 @@
     tools:context=".MainActivity">
 
     <SearchView
+        style="@android:style/Widget.Material.SearchView"
         android:layout_width="0dp"
-        android:layout_height="35dp"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+        android:layout_height="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="368dp"
-        android:layout_height="452dp"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="51dp" />
 </android.support.constraint.ConstraintLayout>

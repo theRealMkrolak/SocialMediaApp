@@ -1,5 +1,6 @@
 package com.example.school.socialmediaapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -9,11 +10,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -32,7 +36,7 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
     private FirebaseDatabase database;
     private FirebaseAuth mAuth;
 
-    private int[] LIST_OF_FRAGMENTS = new int[]{R.layout.fragment_screen_slide_page,R.layout.fragment_screen_slide_page2,R.layout.fragment_screen_slide_page3};
+    private int[] LIST_OF_FRAGMENTS = new int[]{R.layout.profile_fragment,R.layout.feed_fragment,R.layout.search_fragment};
 
     /**
      * The pager adapter, which provides the pages to the view pager widget.
@@ -57,7 +61,8 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
         }
     };
 
-    private PagerAdapter mPagerAdapter;
+
+    private ScreenSlidePagerAdapter mPagerAdapter;
     public int i;
 
     @Override
@@ -98,6 +103,16 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
             public void onPageScrollStateChanged(int state) {
 
             }
+
+
+
+        });
+
+        ((ScreenSlidePageFragment)mPagerAdapter.getItem(0)).setOnStartListener(new OnViewCreateListener() {
+            @Override
+            public void onLoadListener(View v) {
+                ((TextView)v.findViewById(R.id.username)).setText(mAuth.getCurrentUser().getDisplayName());
+            }
         });
     }
     @Override
@@ -110,6 +125,11 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
             // Otherwise, select the previous step.
             mPager.setCurrentItem(mPager.getCurrentItem() - 1);
         }
+    }
+
+    public void logOut(View v){
+        mAuth.signOut();
+        startActivity(new Intent(ScreenSlidePagerActivity.this,LoginActivity.class));
     }
 
     /**
@@ -139,4 +159,10 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
             return fragmentList.size();
         }
     }
+
+    public void postPage(View v){
+        startActivity(new Intent(ScreenSlidePagerActivity.this,PostActivity.class));
+    }
+
+
 }

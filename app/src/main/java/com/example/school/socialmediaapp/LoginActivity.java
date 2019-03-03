@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import android.support.annotation.NonNull;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 
@@ -27,6 +28,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.FirebaseDatabase;
 
 
@@ -44,8 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private Button btnLogin;
     private FirebaseDatabase database;
-    String email;
-    String password;
+
     CheckBox newUser;
 
 
@@ -65,7 +66,8 @@ public class LoginActivity extends AppCompatActivity {
         }
 
 
-
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
 
         inputEmail =  findViewById(R.id.email);
@@ -78,8 +80,8 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                email = inputEmail.getText().toString();
-                password = inputPassword.getText().toString();
+                String email = inputEmail.getText().toString();
+                String password = inputPassword.getText().toString();
 
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
@@ -93,32 +95,43 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 //authenticate user
-                if (newUser.isEnabled() == true){
-                    createAccount();
-                    Intent intent = new Intent(LoginActivity.this, ScreenSlidePagerActivity.class);
-                    startActivity(intent);
+                if (newUser.isChecked() == true) {
+                    auth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
 
+                                        FirebaseUser user = auth.getCurrentUser();
+                                        UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(user.getEmail().split("@")[0]).build();
+                                        user.updateProfile(userProfileChangeRequest);
+                                    } else {
+                                        Toast.makeText(LoginActivity.this, task.getException().getMessage(),
+                                                Toast.LENGTH_SHORT).show();
+
+                                    }
+
+                                }
+                            });
                 }else{
                     auth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
-                                    // If sign in fails, display a message to the user. If sign in succeeds
-                                    // the auth state listener will be notified and logic to handle the
-                                    // signed in user can be handled in the listener.
-                                    if (task.isSuccessful()) {
+                                    if (task.isSuccessful() && auth.getCurrentUser()!=null) {
                                         Intent intent = new Intent(LoginActivity.this, ScreenSlidePagerActivity.class);
                                         startActivity(intent);
                                     }
                                 }
                             });
                 }
-
-
-
             }
         });
     }
+
+
+
+
     @Override
     public void onStart() {
         super.onStart();
@@ -126,25 +139,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser currentUser = auth.getCurrentUser();
     }
     public void createAccount(){
-    auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-        @Override
-        public void onComplete(@NonNull Task<AuthResult> task) {
-            if (task.isSuccessful()) {
-                // Sign in success, update UI with the signed-in user's information
 
-                FirebaseUser user = auth.getCurrentUser();
-
-
-            } else {
-                // If sign in fails, display a message to the user.
-                Toast.makeText(LoginActivity.this, task.getException().getMessage(),
-                        Toast.LENGTH_SHORT).show();
-
-            }
-
-            }
-        });
     }
 
 }
