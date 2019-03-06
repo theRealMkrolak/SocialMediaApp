@@ -3,6 +3,8 @@ package com.example.school.socialmediaapp;
 
 import android.content.Intent;
 
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import android.support.v7.app.ActionBar;
@@ -103,10 +105,11 @@ public class LoginActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
 
                                         FirebaseUser user = auth.getCurrentUser();
-                                        UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(user.getEmail().split("@")[0]).build();
+                                        UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(user.getEmail().split("@")[0]).setPhotoUri(Uri.parse("android.resource://"+LoginActivity.this.getPackageName()+"/drawable/usersilhouette")).build();
                                         user.updateProfile(userProfileChangeRequest);
 
-                                        database.getReference("USERS").child(user.getEmail()).push().setValue("");
+                                        database.getReference("USERS").child(user.getEmail().split("@")[0]).child("PHOTO").push().setValue(Uri.parse("android.resource://"+LoginActivity.this.getPackageName()+"/drawable/usersilhouette"));
+                                        database.getReference("USERS").child(user.getEmail().split("@")[0]).child("FOLLOWERS").push().setValue(user.getEmail().split("@")[0]);
 
                                         Intent intent = new Intent(LoginActivity.this, ScreenSlidePagerActivity.class);
                                         startActivity(intent);

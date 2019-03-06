@@ -1,7 +1,9 @@
 package com.example.school.socialmediaapp;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -13,6 +15,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -122,6 +127,7 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
             @Override
             public void onLoadListener(View v) {
                 ((TextView)v.findViewById(R.id.username)).setText(mAuth.getCurrentUser().getDisplayName());
+                ((ImageView)v.findViewById(R.id.imageView)).setImageURI(mAuth.getCurrentUser().getPhotoUrl());
             }
         });
 
@@ -136,13 +142,33 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
 
                     @Override
                     public boolean onQueryTextChange(String newText) {
-                        database.getReference("USERS").addValueEventListener(new ValueEventListener() {
+                        database.getReference("USERS").orderByChild(newText).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                ArrayList<String> usernames = new ArrayList<>();
-                                dataSnapshot.getChildren().forEach(d->usernames.add((String)d.getValue()));
-                                for (String s : usernames) {
+                                LinearLayout linearLayout = findViewById(R.id.linearLayout);
+                                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
                                     CardView cardView = new CardView(ScreenSlidePagerActivity.this);
+                                    LinearLayout linearLayoutInside = new LinearLayout(ScreenSlidePagerActivity.this);
+                                    ImageView imageView = new ImageView(ScreenSlidePagerActivity.this);
+                                    TextView textView = new TextView(ScreenSlidePagerActivity.this);
+
+                                    cardView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));
+                                    linearLayoutInside.setLayoutParams(new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT,CardView.LayoutParams.WRAP_CONTENT));
+                                    imageView.setLayoutParams(new LinearLayout.LayoutParams(150,150));
+                                    textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));
+
+                                    textView.setTextSize(50);
+                                    imageView.setImageURI(((Uri)(dataSnapshot1.child("IMAGE").getValue())));
+                                    textView.setText(dataSnapshot1.getKey());
+                                    linearLayoutInside.setOrientation(LinearLayout.HORIZONTAL);
+
+                                    linearLayoutInside.addView(imageView,0);
+                                    linearLayoutInside.addView(textView,1);
+
+                                    cardView.addView(linearLayoutInside);
+                                    linearLayout.addView(cardView);
+
+
 
                                 }
 
