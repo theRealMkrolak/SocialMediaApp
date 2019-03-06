@@ -8,6 +8,7 @@
     tools:context=".MainActivity">
 
     <SearchView
+        android:id="@+id/searchView"
         style="@android:style/Widget.Material.SearchView"
         android:layout_width="0dp"
         android:layout_height="50dp"

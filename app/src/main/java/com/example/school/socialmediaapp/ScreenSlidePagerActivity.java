@@ -10,16 +10,22 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.CardView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ScreenSlidePagerActivity extends FragmentActivity {
     /**
@@ -36,7 +42,12 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
     private FirebaseDatabase database;
     private FirebaseAuth mAuth;
 
+    public static final String DATABASE_REFERENCE ="GET_POST";
+
     private int[] LIST_OF_FRAGMENTS = new int[]{R.layout.profile_fragment,R.layout.feed_fragment,R.layout.search_fragment};
+
+    private ScreenSlidePagerAdapter mPagerAdapter;
+    public int i;
 
     /**
      * The pager adapter, which provides the pages to the view pager widget.
@@ -62,8 +73,7 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
     };
 
 
-    private ScreenSlidePagerAdapter mPagerAdapter;
-    public int i;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +124,43 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
                 ((TextView)v.findViewById(R.id.username)).setText(mAuth.getCurrentUser().getDisplayName());
             }
         });
+
+        ((ScreenSlidePageFragment)mPagerAdapter.getItem(2)).setOnStartListener(new OnViewCreateListener() {
+            @Override
+            public void onLoadListener(View v) {
+                ((SearchView)v.findViewById(R.id.searchView)).setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        database.getReference("USERS").addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                ArrayList<String> usernames = new ArrayList<>();
+                                dataSnapshot.getChildren().forEach(d->usernames.add((String)d.getValue()));
+                                for (String s : usernames) {
+                                    CardView cardView = new CardView(ScreenSlidePagerActivity.this);
+
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                        return false;
+
+                    }
+                });
+            }
+        });
+
+
     }
     @Override
     public void onBackPressed() {

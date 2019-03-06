@@ -105,6 +105,11 @@ public class LoginActivity extends AppCompatActivity {
                                         FirebaseUser user = auth.getCurrentUser();
                                         UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(user.getEmail().split("@")[0]).build();
                                         user.updateProfile(userProfileChangeRequest);
+
+                                        database.getReference("USERS").child(user.getEmail()).push().setValue("");
+
+                                        Intent intent = new Intent(LoginActivity.this, ScreenSlidePagerActivity.class);
+                                        startActivity(intent);
                                     } else {
                                         Toast.makeText(LoginActivity.this, task.getException().getMessage(),
                                                 Toast.LENGTH_SHORT).show();
